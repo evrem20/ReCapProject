@@ -11,7 +11,7 @@ namespace ConsoleUI
         static void Main(string[] args)
         {
             //CarTest();
-            BrandTest();
+            //BrandTest();
             //ColorTest();
         }
 
@@ -21,27 +21,38 @@ namespace ConsoleUI
 
             Console.WriteLine("**********Color*GetAll*********");
 
-            foreach (var c in colorManager.GetAll())
+            var result = colorManager.GetAll();
+
+            if (result.Success==true)
             {
-                Console.WriteLine(c.ColorName);
+                foreach (var c in result.Data)
+                {
+                    Console.WriteLine(c.ColorName);
+                }
+            }
+            else
+            {
+                Console.WriteLine(result.Message);
             }
 
             Console.WriteLine("**********Color*GetById*********");
 
-            Color color = colorManager.GetById(2);
+            var result1 = colorManager.GetById(2);
+            Color color = result1.Data;
             Console.WriteLine(color.ColorName);
 
             Console.WriteLine("**********Color*Update*********");
 
             Color color1 = new Color { ColorId = 1, ColorName = "Siyah" };
-            colorManager.Update(color1);
+            var result2 = colorManager.Update(color1);
+            Console.WriteLine(result2.Message);
 
             Console.WriteLine("**********Color*Delete*********");
 
             Color color2 = new Color { ColorId = 4 };
-            colorManager.Delete(color2);
+            var result3 =colorManager.Delete(color2);
+            Console.WriteLine(result3.Message);
 
-           
         }
 
         private static void BrandTest()
@@ -50,27 +61,40 @@ namespace ConsoleUI
 
             Console.WriteLine("**********Brand*GetAll*********");
 
-            foreach (var b in brandManager.GetAll())
-            {
-                Console.WriteLine(b.BrandName);
+            var result = brandManager.GetAll();
 
+            if (result.Success==true)
+            {
+                foreach (var b in result.Data)
+                {
+                    Console.WriteLine(b.BrandName);
+
+                }
             }
+            else
+            {
+                Console.WriteLine(result.Message);
+            }
+            
 
             Console.WriteLine("**********Brand*GetById*********"); 
 
-            Brand brand = brandManager.GetById(2);
+            var result1= brandManager.GetById(2);
+            Brand brand = result1.Data;
            
             Console.WriteLine(brand.BrandName);
 
             Console.WriteLine("**********Brand*Update*********");
 
             Brand brand1 = new Brand { BrandId = 3, BrandName = "Hyduai" };
-            brandManager.Update(brand1);
+            var result2 = brandManager.Update(brand1);
+            Console.WriteLine(result2.Message);
 
             Console.WriteLine("**********Brand*Delete*********");
 
             Brand brand2 = new Brand { BrandId = 4 };
-            brandManager.Delete(brand2);
+            var result3 = brandManager.Delete(brand2);
+            Console.WriteLine(result3.Message);
 
             
         }
@@ -81,45 +105,95 @@ namespace ConsoleUI
 
             Console.WriteLine("**********Car*GetAll*********");
 
-            foreach (var c in carManager.GetAll())
+            var result = carManager.GetAll();
+
+            if (result.Success==true)
             {
-                Console.WriteLine(c.DailyPrice);
+                foreach (var c in result.Data)
+                {
+                    Console.WriteLine(c.DailyPrice);
+                }
+                Console.WriteLine(result.Message);
             }
+            else
+            {
+                Console.WriteLine(result.Message);
+            }
+
 
             Console.WriteLine("**********Car*GetById*********");
 
-            Car car = carManager.GetById(2);
+            var result1 = carManager.GetById(2);
 
-            Console.WriteLine(car.CarName+ "/" + car.DailyPrice);
+            Car car = result1.Data;
 
+            Console.WriteLine(car.CarName+ "/" + car.DailyPrice + "  " +result1.Message);
 
-            Console.WriteLine("**********Car*Update*********");
-
-            Car car1 = new Car { Id = 1, BrandId=2, CarName="Audi Q3", ColorId= 3, DailyPrice=150, Description= "Audi Q3 1.5 TFSI Desing", ModelYear = 2015 };
-            carManager.Update(car1);
-
-            Console.WriteLine("**********Car*Delete*********");
-
-            Car car2 = new Car { Id = 7, };
-            carManager.Delete(car2);
 
             Console.WriteLine("**********Car*GetCarDetails*********");
 
-            foreach (var c in carManager.GetCarDetails())
+            var result2 = carManager.GetCarDetails();
+
+            if (result2.Success == true)
             {
-                Console.WriteLine(c.CarName + "," + c.BrandName + "," + c.ColorName );
+                foreach (var c in result2.Data)
+                {
+                    Console.WriteLine(c.CarName + "/" + c.BrandName + "/" + c.ColorName);
+                }
+                Console.WriteLine(result2.Message);
+            }
+            else
+            {
+                Console.WriteLine(result2.Message);
             }
 
-            Console.WriteLine("**********Car*GetCarsByColorId*********");
 
-            foreach (var c in carManager.GetCarsByColorId(3))
+            Console.WriteLine("**********Car*GetAllByColorId*********");
+
+            var result3 = carManager.GetAllByColorId(2);
+
+            foreach (var c in result3.Data)
             {
-                Console.WriteLine(c.Description);
+                Console.WriteLine(c.CarName);
             }
+            Console.WriteLine( result3.Message);
 
-            Console.WriteLine("**********Car*CarAdd*********");
+            Console.WriteLine("**********Car*GetAllByBrandId*********");
 
-            carManager.Add(new Car { Id = 7, BrandId = 2, ColorId = 1, CarName = "BMW 3 Serisi", ModelYear = 2018, DailyPrice = 100, Description = "BMV 3 Serisi Coupé" });
+            var result4 = carManager.GetAllByBrandId(3);
+
+            foreach (var c in result4.Data)
+            {
+                Console.WriteLine(c.CarName);
+            }
+            Console.WriteLine(result4.Message);
+
+            Console.WriteLine("**********Car*Add*********");
+
+            var result5=carManager.Add(new Car {Id=6, BrandId = 2, ColorId = 1, CarName = "BMW 3 Serisi", ModelYear = 2018, DailyPrice = 100, Description = "BMV 3 Serisi Coupé" });
+            Console.WriteLine(result5.Message);
+
+
+            Console.WriteLine("**********Car*Delete*********");
+
+            Car car1 = new Car { Id = 6 };
+
+            var result6 = carManager.Delete(car1);
+            Console.WriteLine(result6.Message);
+     
+
+            Console.WriteLine("**********Car*Update*********");
+
+            Car car2 = new Car { Id = 1, BrandId = 2, CarName = "Audi Q3", ColorId = 2, DailyPrice = 150, Description = "Audi Q3 1.5 TFSI Desing", ModelYear = 2015 };
+
+            var result7= carManager.Update(car2);
+            Console.WriteLine(result7.Message);
+            
+            
+
+
+
+            
 
 
 
