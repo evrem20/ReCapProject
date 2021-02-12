@@ -13,6 +13,10 @@ namespace ConsoleUI
             //CarTest();
             //BrandTest();
             //ColorTest();
+
+            RentalManager rentalManager = new RentalManager(new EfRentalDal());
+            var result = rentalManager.Add(new Rental { Id=1, CarId = 4, CustomerId = 1, RentDate = new DateTime(2021,2,5), ReturnDate=new DateTime(2021,2,12)});
+            Console.WriteLine(result.Message);
         }
 
         private static void ColorTest()
@@ -43,13 +47,13 @@ namespace ConsoleUI
 
             Console.WriteLine("**********Color*Update*********");
 
-            Color color1 = new Color { ColorId = 1, ColorName = "Siyah" };
+            Color color1 = new Color { Id = 1, ColorName = "Siyah" };
             var result2 = colorManager.Update(color1);
             Console.WriteLine(result2.Message);
 
             Console.WriteLine("**********Color*Delete*********");
 
-            Color color2 = new Color { ColorId = 4 };
+            Color color2 = new Color { Id = 4 };
             var result3 =colorManager.Delete(color2);
             Console.WriteLine(result3.Message);
 
@@ -86,13 +90,13 @@ namespace ConsoleUI
 
             Console.WriteLine("**********Brand*Update*********");
 
-            Brand brand1 = new Brand { BrandId = 3, BrandName = "Hyduai" };
+            Brand brand1 = new Brand { Id = 3, BrandName = "Hyduai" };
             var result2 = brandManager.Update(brand1);
             Console.WriteLine(result2.Message);
 
             Console.WriteLine("**********Brand*Delete*********");
 
-            Brand brand2 = new Brand { BrandId = 4 };
+            Brand brand2 = new Brand { Id = 4 };
             var result3 = brandManager.Delete(brand2);
             Console.WriteLine(result3.Message);
 

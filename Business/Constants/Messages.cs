@@ -21,6 +21,8 @@ namespace Business.Constants
         public static string BrandUpdated ="Marka güncellendi";
         public static string ColorDeleted = "Renk silindi.";
         public static string ColorUpdated = "Renk güncellendi";
+        public static string RentalAddedError = "Araç henüz teslim edilmemiştir.";
+        public static string RentalAdded = "Araç kiralandı.";
     }
 }
 
