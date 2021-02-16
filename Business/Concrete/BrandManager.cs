@@ -18,6 +18,17 @@ namespace Business.Concrete
             _brandDal = brandDal;
         }
 
+        public IResult Add(Brand brand)
+        {
+            if (brand.BrandName.Length < 2)
+            {
+                return new ErrorResult(Messages.BrandNameInvalid);
+            }
+            _brandDal.Add(brand);
+
+            return new SuccessResult(Messages.BrandAdded);
+        }
+
         public IResult Delete(Brand brand)
         {
             _brandDal.Delete(brand);
@@ -30,12 +41,12 @@ namespace Business.Concrete
             {
                 return new ErrorDataResult<List<Brand>>(Messages.MaintenanceTime);
             }
-            return new SuccessDataResult<List<Brand>>(_brandDal.GetAll());
+            return new SuccessDataResult<List<Brand>>(_brandDal.GetAll(),Messages.BrandsListed);
         }
 
         public IDataResult<Brand> GetById(int Id)
         {
-            return new SuccessDataResult<Brand>(_brandDal.Get(b => b.Id == Id));    
+            return new SuccessDataResult<Brand>(_brandDal.Get(b => b.Id == Id), Messages.BrandPropertyListed);    
         }
 
         public IResult Update(Brand brand)
