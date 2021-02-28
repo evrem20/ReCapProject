@@ -3,6 +3,7 @@ using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -10,6 +11,7 @@ using Entities.DTOs;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Business.Concrete
@@ -26,11 +28,16 @@ namespace Business.Concrete
         [ValidationAspect (typeof(CarValidator))]
         public IResult Add(Car car)
         {
-
+            IResult result = BusinessRules.Run(CheckIfCarNameExists(car.CarName),
+                CheckIfCarCountOfBrandCorrent(car.BrandId));
+            if (result !=null)
+            {
+                return result;
+            }
             _carDal.Add(car);
 
             return new SuccessResult(Messages.CarAdded);
-            
+
         }
 
         public IResult Delete(Car car)
@@ -82,8 +89,33 @@ namespace Business.Concrete
 
         public IResult Update(Car car)
         {
-            _carDal.Update(car);
-            return new SuccessResult(Messages.CarUpdated);
+            if (CheckIfCarCountOfBrandCorrent(car.BrandId).Success)
+            {
+                _carDal.Update(car);
+                return new SuccessResult(Messages.CarUpdated);
+            }
+            return new ErrorResult();
+           
+        }
+
+        private IResult CheckIfCarCountOfBrandCorrent(int brandId)
+        {
+            var result = _carDal.GetAll(c => c.BrandId == brandId).Count;
+            if (result >= 20)
+            {
+                return new ErrorResult(Messages.CarCountOfBrandError);
+            }
+            return new SuccessResult();
+        }
+
+        private IResult CheckIfCarNameExists(string carName)
+        {
+            var result = _carDal.GetAll(c => c.CarName == carName).Any();
+            if (result)
+            {
+                return new ErrorResult(Messages.CarNameAlreadyExists);
+            }
+            return new SuccessResult();
         }
     }
 }

@@ -7,6 +7,8 @@ namespace Business.Constants
 {
     public static class Messages
     {
+        public static string[] ValidImageFileTypes = { ".JPG", ".JPEG", ".PNG", ".TIF", ".TIFF", ".GIF", ".BMP", ".ICO" };
+
         public static string CarAdded = "Araba eklendi.";
         public static string CarNameInvalid = "Araba markası geçersizdir.";
         public static string CarDeleted = "Araba silindi.";
@@ -54,6 +56,15 @@ namespace Business.Constants
         public static string UsersListed = "Kullanıcılar listelendi";
         public static string UserPropertyListed = "Seçtiğiniz kullanıcının özellikleri listelendi.";
         internal static string ReturnedRental;
+        public static string CarCountOfBrandError = "Bir markadan en fazla 20 araba olabilir.";
+        public static string CarNameAlreadyExists= "Bu araba ismine sahip bir araba sistemde vardır.";
+        public static string CarImageDeleted ="Araba resmi silindi.";
+        public static string CarImageListed="Araba resimleri listelendi";
+        public static string CarImageListedCarId = "Seçilen arabanın resimleri listelendi.";
+        public static string CarImageAdd = "Araba resmi eklendi.";
+        public static string CarImageUpdate="Araba resmi güncellendi.";
+        public static string FailAddedImageLimit="Resim ekleme sınırına ulaşmıştır.";
+        public static string MustPicture="Resim göndermelisiniz.";
     }
 
 
