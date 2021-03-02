@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
@@ -10,6 +11,8 @@ using Entities.Concrete;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Business.Concrete
@@ -23,6 +26,7 @@ namespace Business.Concrete
             _carImageDal = carImageDal;
         }
         
+        [SecuredOperation ("product.add , admin")]
         [ValidationAspect(typeof(CarImageValidator))]
         public IResult Add(CarImage carImage, IFormFile file)
         {
@@ -55,7 +59,13 @@ namespace Business.Concrete
 
         public IDataResult<List<CarImage>> GetImagesByCarId(int carId)
         {
-            return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll(cı => cı.CarId == carId), Messages.CarImageListedCarId);
+            IResult result = BusinessRules.Run(CheckIfCarHaveNoImage(carId));
+            if (result != null)
+            {
+                return new ErrorDataResult<List<CarImage>>();
+            }
+
+            return new SuccessDataResult<List<CarImage>>(CheckIfCarHaveNoImage(carId).Data);
         }
 
         public IResult Update(CarImage carImage, IFormFile file)
@@ -84,6 +94,27 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
+        private IDataResult<List<CarImage>> CheckIfCarHaveNoImage(int carId)
+        {
+            try
+            {
+                string path = @"wwwroot\Images\default.png";
+                var result = _carImageDal.GetAll(c => c.CarId == carId).Any();
+                if (!result)
+                {
+                    List<CarImage> carimage = new List<CarImage>();
+                    carimage.Add(new CarImage { CarId = carId, ImagePath = path, Date = DateTime.Now });
+                    return new SuccessDataResult<List<CarImage>>(carimage);
+                }
+            }
+            catch (Exception exception)
+            {
+
+                return new ErrorDataResult<List<CarImage>>(exception.Message);
+            }
+
+            return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll(cı => cı.CarId == carId).ToList());
+        }
 
     }
 }

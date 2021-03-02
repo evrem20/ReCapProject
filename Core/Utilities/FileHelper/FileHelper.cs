@@ -43,7 +43,7 @@ namespace Core.Utilities.FileHelper
         }
         public static string CreateGuid()
         {
-            return Guid.NewGuid().ToString("N")+"-"+ DateTime.Now.Month+"-"+DateTime.Now.Day + "-" + DateTime.Now.Year;
+            return Guid.NewGuid().ToString();
         }
     }
 }
