@@ -2,6 +2,9 @@
 using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Performance;
+using Core.Aspects.Autofac.Transaction;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Business;
@@ -26,13 +29,14 @@ namespace Business.Concrete
             _carDal = carDal;
         }
 
-        [SecuredOperation("product.add , admin")]
+        [SecuredOperation("car.add,admin")]
         [ValidationAspect (typeof(CarValidator))]
+        [CacheRemoveAspect("ICarService.get")]
         public IResult Add(Car car)
         {
             IResult result = BusinessRules.Run(CheckIfCarNameExists(car.CarName),
                 CheckIfCarCountOfBrandCorrent(car.BrandId));
-            if (result !=null)
+            if (result != null)
             {
                 return result;
             }
@@ -42,6 +46,7 @@ namespace Business.Concrete
 
         }
 
+        [CacheRemoveAspect("ICarService.get")]
         public IResult Delete(Car car)
         {
             _carDal.Delete(car);
@@ -49,6 +54,9 @@ namespace Business.Concrete
             
         }
 
+
+        [CacheAspect]
+        [PerformanceAspect(5)]
         public IDataResult<List<Car>> GetAll()
         {
             if (DateTime.Now.Hour==23)
@@ -64,6 +72,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.DailyPrice >= min && c.DailyPrice <= max), Messages.CarDailyPriceListed);
         }
 
+        [CacheAspect]
         public IDataResult<Car> GetById(int id)
         {
             return new SuccessDataResult<Car>(_carDal.Get(c => c.Id == id),Messages.CarPropertyListed);
@@ -89,6 +98,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Car>> (_carDal.GetAll(c => c.ColorId == id), Messages.CarColorIdListed);
         }
 
+        [CacheRemoveAspect("ICarService.get")]
         public IResult Update(Car car)
         {
             if (CheckIfCarCountOfBrandCorrent(car.BrandId).Success)
@@ -118,6 +128,20 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.CarNameAlreadyExists);
             }
             return new SuccessResult();
+        }
+
+        [TransactionScopeAspect]
+        public IResult AddTransactionalTest(Car car)
+        {
+            Add(car);
+            if (car.DailyPrice < 150)
+            {
+                throw new Exception("");
+            }
+
+            Add(car);
+
+            return null;
         }
     }
 }
