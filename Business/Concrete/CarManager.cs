@@ -59,7 +59,7 @@ namespace Business.Concrete
         [PerformanceAspect(5)]
         public IDataResult<List<Car>> GetAll()
         {
-            if (DateTime.Now.Hour==21)
+            if (DateTime.Now.Hour==20)
             {
                 return new ErrorDataResult<List<Car>>(Messages.MaintenanceTime);
             }
@@ -80,22 +80,27 @@ namespace Business.Concrete
 
         public IDataResult<List<CarDetailDto>> GetCarDetails()
         {
-            if (DateTime.Now.Hour == 21)
+            if (DateTime.Now.Hour == 20)
             {
                 return new ErrorDataResult<List<CarDetailDto>>(Messages.MaintenanceTime);
             }
             return new SuccessDataResult<List<CarDetailDto>> (_carDal.GetCarDetails(), Messages.CarsListed);
         }
 
-        public IDataResult<List<Car>> GetAllByBrandId(int id)
+        public IDataResult<List<CarDetailDto>> GetByBrandIdDetails(int id)
         {
-            return new SuccessDataResult<List<Car>> (_carDal.GetAll(c => c.BrandId == id), Messages.CarBrandIdListed);
+            return new SuccessDataResult<List<CarDetailDto>> (_carDal.GetCarDetails(c=>c.BrandId==id), Messages.CarBrandIdListed);
         }
 
-        public IDataResult<List<Car>> GetAllByColorId(int id)
+        public IDataResult<List<CarDetailDto>> GetByColorIdDetails(int id)
         {
          
-            return new SuccessDataResult<List<Car>> (_carDal.GetAll(c => c.ColorId == id), Messages.CarColorIdListed);
+            return new SuccessDataResult<List<CarDetailDto>> (_carDal.GetCarDetails(c=>c.ColorId==id), Messages.CarColorIdListed);
+        }
+        public IDataResult<List<CarDetailDto>> GetByCarIdDetails(int id)
+        {
+
+            return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(c => c.Id == id), Messages.CarColorIdListed);
         }
 
         [CacheRemoveAspect("ICarService.get")]

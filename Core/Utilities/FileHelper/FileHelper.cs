@@ -10,7 +10,7 @@ namespace Core.Utilities.FileHelper
     {
         public static string AddAsycn(IFormFile file)
         {
-            string extension = Path.GetExtension(file.FileName).ToUpper();
+            string extension = Path.GetExtension(file.FileName);
             string newGUID = CreateGuid() + extension;
             var directory = Directory.GetCurrentDirectory() + "\\wwwroot";
             var path = directory + @"\Images";
@@ -21,8 +21,8 @@ namespace Core.Utilities.FileHelper
             string imagePath;
             using (FileStream fileStream = File.Create(path + "\\" + newGUID))
             {
-                file.CopyToAsync(fileStream);
-                imagePath = path + "\\" + newGUID;
+                file.CopyTo(fileStream);
+                imagePath = "/images"+"\\" + newGUID;
                 fileStream.Flush();
             }
             return imagePath.Replace("\\", "/");

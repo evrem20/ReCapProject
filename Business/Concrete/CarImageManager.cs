@@ -26,7 +26,7 @@ namespace Business.Concrete
             _carImageDal = carImageDal;
         }
         
-        [SecuredOperation ("product.add , admin")]
+      
         [ValidationAspect(typeof(CarImageValidator))]
         public IResult Add(CarImage carImage, IFormFile file)
         {
@@ -98,7 +98,7 @@ namespace Business.Concrete
         {
             try
             {
-                string path = @"wwwroot\Images\default.png";
+                string path = @"\images\default.png";
                 var result = _carImageDal.GetAll(c => c.CarId == carId).Any();
                 if (!result)
                 {

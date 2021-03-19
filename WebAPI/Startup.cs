@@ -90,12 +90,16 @@ namespace WebAPI
 
             app.UseAuthentication();
 
+            app.UseStaticFiles();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+
         }
     }
 }
